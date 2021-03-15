@@ -6,6 +6,12 @@ const selectDesignEl = document.querySelector("#design");
 const colorOptions = document.querySelectorAll("[data-theme]");
 const registerForActivities = document.querySelector("#activities");
 let totalActivitiesCost = 0;
+const selectPaymentEl = document.querySelector("#payment");
+const creditCardEl = document.querySelector("#credit-card");
+const paypalEl = document.querySelector("#paypal");
+const bitcoinEl = document.querySelector("#bitcoin");
+
+// Basic Info //
 
 //Set name field to focus state on page load
 inputNameEl.setAttribute("focus", true);
@@ -22,6 +28,8 @@ selectJobRoleEl.addEventListener("change", () => {
     inputOtherJobRoleEl.style.display = "none";
   }
 });
+
+// T-Shirt info //
 
 //Disable select color field on page load
 selectColorEl.disabled = true;
@@ -48,6 +56,8 @@ selectDesignEl.addEventListener("change", () => {
   }
 });
 
+// Register fpr Activities //
+
 //When activity checked/unchecked update total accordingly
 registerForActivities.addEventListener("change", (e) => {
   const individualActivityCost = e.target.getAttribute("data-cost");
@@ -59,4 +69,40 @@ registerForActivities.addEventListener("change", (e) => {
     totalActivitiesCost -= Number(individualActivityCost);
   }
   activitiesCostEl.innerHTML = `Total: $${totalActivitiesCost}.00`;
+});
+
+// Payment info: //
+
+// set payment method
+setCreditCardAsPayment = () => {
+  selectPaymentEl[1].selected = true;
+  creditCardEl.hidden = false;
+  paypalEl.hidden = true;
+  bitcoinEl.hidden = true;
+};
+
+setPaypalAsPayment = () => {
+  creditCardEl.hidden = true;
+  paypalEl.hidden = false;
+  bitcoinEl.hidden = true;
+};
+
+setBitcoinAsPayment = () => {
+  creditCardEl.hidden = true;
+  paypalEl.hidden = true;
+  bitcoinEl.hidden = false;
+};
+
+//defualt payment method
+setCreditCardAsPayment();
+
+//Update payment info fields based on selection
+selectPaymentEl.addEventListener("change", () => {
+  if (selectPaymentEl[1].selected) {
+    setCreditCardAsPayment();
+  } else if (selectPaymentEl[2].selected) {
+    setPaypalAsPayment();
+  } else if (selectPaymentEl[3].selected) {
+    setBitcoinAsPayment();
+  }
 });
