@@ -1,4 +1,5 @@
 const inputNameEl = document.querySelector("#name");
+const inputEmailEl = document.querySelector("#email");
 const inputOtherJobRoleEl = document.querySelector("#other-job-role");
 const selectJobRoleEl = document.querySelector("#title");
 const selectColorEl = document.querySelector("#color");
@@ -8,8 +9,12 @@ const registerForActivities = document.querySelector("#activities");
 let totalActivitiesCost = 0;
 const selectPaymentEl = document.querySelector("#payment");
 const creditCardEl = document.querySelector("#credit-card");
+const inputCreditCardNumEl = document.querySelector("#cc-num");
+const inputZipcodeEl = document.querySelector("#zip");
+const inputCvvEl = document.querySelector("#cvv");
 const paypalEl = document.querySelector("#paypal");
 const bitcoinEl = document.querySelector("#bitcoin");
+const formEl = document.querySelector("form");
 
 // Basic Info //
 
@@ -37,26 +42,18 @@ selectColorEl.disabled = true;
 //Listen for design selection and update available colors accordingly
 selectDesignEl.addEventListener("change", () => {
   selectColorEl.disabled = false;
-  if (selectDesignEl[0].selected) {
-    for (let i = 0; i < colorOptions.length; i++) {
-      const dataTheme = colorOptions[i].getAttribute("data-theme");
+  selectColorEl.firstElementChild.selected = true;
+  for (let i = 0; i < colorOptions.length; i++) {
+    const dataThem = colorOptions[i].getAttribute("data-theme");
+    if (selectDesignEl.value === dataThem) {
       colorOptions[i].hidden = false;
-      if (dataTheme !== "js puns") {
-        colorOptions[i].hidden = true;
-      }
-    }
-  } else if (selectDesignEl[1].selected) {
-    for (let i = 0; i < colorOptions.length; i++) {
-      const dataTheme = colorOptions[i].getAttribute("data-theme");
-      colorOptions[i].hidden = false;
-      if (dataTheme !== "heart js") {
-        colorOptions[i].hidden = true;
-      }
+    } else {
+      colorOptions[i].hidden = true;
     }
   }
 });
 
-// Register fpr Activities //
+// Register for Activities //
 
 //When activity checked/unchecked update total accordingly
 registerForActivities.addEventListener("change", (e) => {
@@ -73,7 +70,7 @@ registerForActivities.addEventListener("change", (e) => {
 
 // Payment info: //
 
-// set payment method
+// Functions to set payment methods
 setCreditCardAsPayment = () => {
   selectPaymentEl[1].selected = true;
   creditCardEl.hidden = false;
@@ -104,5 +101,74 @@ selectPaymentEl.addEventListener("change", () => {
     setPaypalAsPayment();
   } else if (selectPaymentEl[3].selected) {
     setBitcoinAsPayment();
+  }
+});
+
+//Form validation
+////validator functions
+nameValidator = () => {
+  const regEx = /[a-zA-Z]/g;
+  const string = inputNameEl.value;
+  const nameIsValid = regEx.test(string);
+  return nameIsValid;
+};
+
+emailValidator = () => {
+  const regEx = /^[^@ ^]+@[^][^@]+\.com/g;
+  const string = inputEmailEl.value;
+  const emailIsValid = regEx.test(string);
+  return emailIsValid;
+};
+
+activitiesValidator = () => {
+  const activtyIsValid = totalActivitiesCost > 0;
+  return activtyIsValid;
+};
+
+cardNumberValidator = () => {
+  const regEx = /^[0-9]{13,16}$/g;
+  const string = inputCreditCardNumEl.value;
+  const cardNumberIsValid = regEx.test(string);
+  return cardNumberIsValid;
+};
+
+zipCodeValidator = () => {
+  const regEx = /^[0-9]{5}$/g;
+  const string = inputZipcodeEl.value;
+  const zipCodeIsValid = regEx.test(string);
+  return zipCodeIsValid;
+};
+
+cvvValidator = () => {
+  const regEx = /^[0-9]{3}$/g;
+  const string = inputCvvEl.value;
+  const cvvIsValid = regEx.test(string);
+  return cvvIsValid;
+};
+
+creditCardValidator = () => {
+  if (selectPaymentEl[1].selected) {
+    const creditCardinfoIsValid =
+      cardNumberValidator() && zipCodeValidator() && cvvValidator();
+    return creditCardinfoIsValid;
+  }
+};
+
+formEl.addEventListener("submit", (e) => {
+  if (!nameValidator()) {
+    e.preventDefault();
+    console.log("nameValidator prevented Submission");
+  }
+  if (!emailValidator()) {
+    e.preventDefault();
+    console.log("emailValidator prevented Submission");
+  }
+  if (!activitiesValidator()) {
+    e.preventDefault();
+    console.log("activityValidator prevented Submission");
+  }
+  if (!creditCardValidator()) {
+    e.preventDefault();
+    console.log("creditCardValidator prevented Submission");
   }
 });
