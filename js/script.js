@@ -225,6 +225,7 @@ zipCodeValidator = () => {
   } else {
     updateStylesForPassedValidation(inputZipcodeEl);
   }
+  console.log("zip function was fired");
   return zipCodeIsValid;
 };
 
@@ -242,6 +243,9 @@ cvvValidator = () => {
 
 creditCardValidator = () => {
   if (selectPaymentEl[1].selected) {
+    cardNumberValidator();
+    zipCodeValidator();
+    cvvValidator();
     const creditCardinfoIsValid =
       cardNumberValidator() && zipCodeValidator() && cvvValidator();
     return creditCardinfoIsValid;
