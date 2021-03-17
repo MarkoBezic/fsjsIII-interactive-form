@@ -19,6 +19,7 @@ const bitcoinEl = document.querySelector("#bitcoin");
 const formEl = document.querySelector("form");
 
 // Basic Info //
+/***************/
 
 //Set name field to focus state on page load
 inputNameEl.setAttribute("focus", true);
@@ -37,6 +38,7 @@ selectJobRoleEl.addEventListener("change", () => {
 });
 
 // T-Shirt info //
+/****************/
 
 //Disable select color field on page load
 selectColorEl.disabled = true;
@@ -56,18 +58,45 @@ selectDesignEl.addEventListener("change", () => {
 });
 
 // Register for Activities //
+/***************************/
 
 //When activity checked/unchecked update total accordingly
+updateTotalCost = (e, element, cost) => {
+  if (e.target.checked) {
+    totalActivitiesCost += Number(cost);
+  } else {
+    totalActivitiesCost -= Number(cost);
+  }
+  element.innerHTML = `Total: $${totalActivitiesCost}.00`;
+};
+
+disableOrEnableConflicts = (e) => {
+  for (let i = 0; i < activitiesCheckbox.length; i++) {
+    if (
+      e.target.checked &&
+      !activitiesCheckbox[i].checked &&
+      e.target.getAttribute("data-day-and-time") ===
+        activitiesCheckbox[i].getAttribute("data-day-and-time")
+    ) {
+      activitiesCheckbox[i].disabled = true;
+      activitiesCheckbox[i].parentElement.classList.add("disabled");
+    } else if (
+      !e.target.checked &&
+      !activitiesCheckbox[i].checked &&
+      e.target.getAttribute("data-day-and-time") ===
+        activitiesCheckbox[i].getAttribute("data-day-and-time")
+    ) {
+      activitiesCheckbox[i].disabled = false;
+      activitiesCheckbox[i].parentElement.classList.remove("disabled");
+    }
+  }
+};
+
 registerForActivities.addEventListener("change", (e) => {
   const individualActivityCost = e.target.getAttribute("data-cost");
   const activitiesCostEl = document.querySelector(".activities-cost");
-
-  if (e.target.checked) {
-    totalActivitiesCost += Number(individualActivityCost);
-  } else {
-    totalActivitiesCost -= Number(individualActivityCost);
-  }
-  activitiesCostEl.innerHTML = `Total: $${totalActivitiesCost}.00`;
+  updateTotalCost(e, activitiesCostEl, individualActivityCost);
+  disableOrEnableConflicts(e);
 });
 
 //Listen for focus even and add focused class to element
@@ -85,6 +114,7 @@ for (let i = 0; i < activitiesCheckbox.length; i++) {
 }
 
 // Payment info: //
+/*****************/
 
 // Functions to set payment methods
 setCreditCardAsPayment = () => {
@@ -121,6 +151,8 @@ selectPaymentEl.addEventListener("change", () => {
 });
 
 //Form validation//
+/******************/
+
 updateStylesForFailedValidation = (element) => {
   element.parentElement.classList.add("not-valid");
   element.parentElement.classList.remove("valid");
