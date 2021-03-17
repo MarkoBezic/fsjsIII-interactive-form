@@ -167,13 +167,17 @@ updateStylesForPassedValidation = (element) => {
 
 //validator functions
 nameValidator = () => {
-  const regEx = /[a-zA-Z]/g;
+  const regEx = /^[a-zA-Z]$/g;
   const string = inputNameEl.value;
   const nameIsValid = regEx.test(string);
   if (!nameIsValid) {
     updateStylesForFailedValidation(inputNameEl);
   } else {
     updateStylesForPassedValidation(inputNameEl);
+  }
+  if (!nameIsValid && inputNameEl.value.length > 0) {
+    inputNameEl.parentElement.lastElementChild.innerHTML =
+      "Name must be comprised of letters only";
   }
   return nameIsValid;
 };
@@ -263,4 +267,8 @@ formEl.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log("creditCardValidator prevented Submission");
   }
+});
+
+inputEmailEl.addEventListener("keyup", () => {
+  emailValidator();
 });
