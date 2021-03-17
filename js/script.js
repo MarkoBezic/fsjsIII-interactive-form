@@ -6,6 +6,8 @@ const selectColorEl = document.querySelector("#color");
 const selectDesignEl = document.querySelector("#design");
 const colorOptions = document.querySelectorAll("[data-theme]");
 const registerForActivities = document.querySelector("#activities");
+const activitiesBoxEl = document.querySelector("#activities-box");
+const activitiesCheckbox = document.querySelectorAll("[type='checkbox']");
 let totalActivitiesCost = 0;
 const selectPaymentEl = document.querySelector("#payment");
 const creditCardEl = document.querySelector("#credit-card");
@@ -68,6 +70,20 @@ registerForActivities.addEventListener("change", (e) => {
   activitiesCostEl.innerHTML = `Total: $${totalActivitiesCost}.00`;
 });
 
+//Listen for focus even and add focused class to element
+for (let i = 0; i < activitiesCheckbox.length; i++) {
+  activitiesCheckbox[i].addEventListener("focus", () => {
+    activitiesCheckbox[i].parentElement.classList.add("focus");
+  });
+}
+
+//Listen for blurr event and remove focus class
+for (let i = 0; i < activitiesCheckbox.length; i++) {
+  activitiesCheckbox[i].addEventListener("blur", () => {
+    activitiesCheckbox[i].parentElement.classList.remove("focus");
+  });
+}
+
 // Payment info: //
 
 // Functions to set payment methods
@@ -104,24 +120,51 @@ selectPaymentEl.addEventListener("change", () => {
   }
 });
 
-//Form validation
-////validator functions
+//Form validation//
+updateStylesForFailedValidation = (element) => {
+  element.parentElement.classList.add("not-valid");
+  element.parentElement.classList.remove("valid");
+  element.parentElement.lastElementChild.style.display = "inherit";
+};
+
+updateStylesForPassedValidation = (element) => {
+  element.parentElement.classList.add("valid");
+  element.parentElement.classList.remove("not-valid");
+  element.parentElement.lastElementChild.style.display = "none";
+};
+
+//validator functions
 nameValidator = () => {
   const regEx = /[a-zA-Z]/g;
   const string = inputNameEl.value;
   const nameIsValid = regEx.test(string);
+  if (!nameIsValid) {
+    updateStylesForFailedValidation(inputNameEl);
+  } else {
+    updateStylesForPassedValidation(inputNameEl);
+  }
   return nameIsValid;
 };
 
 emailValidator = () => {
-  const regEx = /^[^@ ^]+@[^][^@]+\.com/g;
+  const regEx = /^[^@]+@[^@]+\.com/g;
   const string = inputEmailEl.value;
   const emailIsValid = regEx.test(string);
+  if (!emailIsValid) {
+    updateStylesForFailedValidation(inputEmailEl);
+  } else {
+    updateStylesForPassedValidation(inputEmailEl);
+  }
   return emailIsValid;
 };
 
 activitiesValidator = () => {
   const activtyIsValid = totalActivitiesCost > 0;
+  if (!activtyIsValid) {
+    updateStylesForFailedValidation(activitiesBoxEl);
+  } else {
+    updateStylesForPassedValidation(activitiesBoxEl);
+  }
   return activtyIsValid;
 };
 
@@ -129,6 +172,11 @@ cardNumberValidator = () => {
   const regEx = /^[0-9]{13,16}$/g;
   const string = inputCreditCardNumEl.value;
   const cardNumberIsValid = regEx.test(string);
+  if (!cardNumberIsValid) {
+    updateStylesForFailedValidation(inputCreditCardNumEl);
+  } else {
+    updateStylesForPassedValidation(inputCreditCardNumEl);
+  }
   return cardNumberIsValid;
 };
 
@@ -136,6 +184,11 @@ zipCodeValidator = () => {
   const regEx = /^[0-9]{5}$/g;
   const string = inputZipcodeEl.value;
   const zipCodeIsValid = regEx.test(string);
+  if (!zipCodeIsValid) {
+    updateStylesForFailedValidation(inputZipcodeEl);
+  } else {
+    updateStylesForPassedValidation(inputZipcodeEl);
+  }
   return zipCodeIsValid;
 };
 
@@ -143,6 +196,11 @@ cvvValidator = () => {
   const regEx = /^[0-9]{3}$/g;
   const string = inputCvvEl.value;
   const cvvIsValid = regEx.test(string);
+  if (!cvvIsValid) {
+    updateStylesForFailedValidation(inputCvvEl);
+  } else {
+    updateStylesForPassedValidation(inputCvvEl);
+  }
   return cvvIsValid;
 };
 
@@ -151,6 +209,8 @@ creditCardValidator = () => {
     const creditCardinfoIsValid =
       cardNumberValidator() && zipCodeValidator() && cvvValidator();
     return creditCardinfoIsValid;
+  } else {
+    return true;
   }
 };
 
